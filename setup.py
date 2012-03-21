@@ -5,7 +5,7 @@ version = '1.0a1'
 
 setup(name='raptus.notification',
       version=version,
-      description="Provides a generic way to send notifications to users and groups in plone",
+      description="Provides a generic way to send notifications to users in plone",
       long_description=open("README.txt").read() + "\n" +
                        open(os.path.join("docs", "HISTORY.txt")).read(),
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
