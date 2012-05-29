@@ -116,16 +116,14 @@ var notifications = {};
             list.find('li').fadeOut('fast', function() {
               list.replaceWith(new_list);
               new_list.fadeIn('fast');
-              notifications.init();
-              notifications.publish();
             });
           } else {
             list.replaceWith(new_list);
             new_list.fadeIn('fast');
-            notifications.init();
-            notifications.publish();
           }
         });
+        notifications.init();
+        notifications.publish();
         notifications.lists.removeClass('loading');
         window.setTimeout(function() {
           notifications.updating = false;
