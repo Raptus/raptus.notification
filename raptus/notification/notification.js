@@ -13,8 +13,8 @@ var notifications = {};
     if(!notifications.lists.size())
       return;
     $('body').unbind('mousemove', notifications.update).mousemove(notifications.update);
-    notifications.lists.find('li.new').hover(notifications.over, notifications.out);
-    notifications.lists.find('.new a:not(.delete)').click(notifications.read);
+    notifications.lists.find('li.new').unbind('mouseover').unbind('mouseout').hover(notifications.over, notifications.out);
+    notifications.lists.find('.new a:not(.delete)').unbind('click').click(notifications.read);
     notifications.lists.find('a.delete').unbind('click').click(notifications.del);
     $('.portletNotification:not(.open) .portletItem').hide();
     $('.portletNotification .portletHeader').css('cursor', 'pointer').unbind('click', notifications.toggle).click(notifications.toggle);
@@ -34,15 +34,12 @@ var notifications = {};
   notifications.del = function(e) {
     e.preventDefault();
     e.stopImmediatePropagation();
-    var li = $(this).closest('li');
+    notifications.lists.addClass('loading');
     $.get($(this).attr('href'), {'ajax_load': 1}, function(data) {
-      li.removeClass('loading');
+      notifications.lists.removeClass('loading');
       if(data == '0')
-        return
-      li.fadeOut('fast', function() {
-        li.remove();
-        notifications.load();
-      });
+        return;
+      notifications.load();
     });
   }
 
@@ -111,25 +108,28 @@ var notifications = {};
       window.setTimeout(function() {
         notifications.lists.each(function() {
           var list = $(this);
-          var new_list = $(data).hide();
+          var new_list = $(data).find('li').fadeTo(0, 0);
           if(list.find('li').size()) {
             list.find('li').fadeOut('fast', function() {
-              list.replaceWith(new_list);
-              new_list.fadeIn('fast');
+              notifications.render(list, new_list);
             });
           } else {
-            list.replaceWith(new_list);
-            new_list.fadeIn('fast');
+            notifications.render(list, new_list);
           }
         });
-        notifications.init();
-        notifications.publish();
         notifications.lists.removeClass('loading');
         window.setTimeout(function() {
           notifications.updating = false;
         }, 5000);
       }, 500);
     });
+  }
+
+  notifications.render = function(list, new_list) {
+    list.html('');
+    list.append(new_list.fadeTo('fast', 1));
+    notifications.init();
+    notifications.publish();
   }
 
   notifications.publish = function() {
