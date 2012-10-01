@@ -75,7 +75,7 @@ var notifications = {};
     if(!notifications.counts.size())
       return;
     $.get(notifications.lists.data('url') + '/unread', {'c': (new Date()).getTime()}, function(data) {
-      notifications.counts.html(data);
+      notifications.counts.empty().html(data);
     });
   }
 
@@ -126,7 +126,7 @@ var notifications = {};
   }
 
   notifications.render = function(list, new_list) {
-    list.html('');
+    list.empty();
     list.append(new_list.fadeTo('fast', 1));
     notifications.init();
     notifications.publish();
